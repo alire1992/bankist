@@ -35,7 +35,8 @@ document.addEventListener("keydown", function (e) {
 const btnScrollTo = document.querySelector(".btn--scroll-to");
 const section1 = document.querySelector("#section--1");
 
-btnScrollTo.addEventListener("click", () => {
+// Button scrolling
+btnScrollTo.addEventListener("click", function () {
   // old way
   // const sec1cord = section1.getBoundingClientRect();
   // window.scrollTo({
@@ -46,4 +47,24 @@ btnScrollTo.addEventListener("click", () => {
 
   // modern way
   section1.scrollIntoView({ behavior: "smooth" });
+});
+
+// Page navigation
+// Not efficient!!!
+// document.querySelectorAll(".nav__link").forEach((el) => {
+//   el.addEventListener("click", function (e) {
+//     e.preventDefault();
+//     console.log(this);
+//     const id = this.getAttribute("href");
+//     document.querySelector(id).scrollIntoView({ behavior: "smooth" });
+//   });
+// });
+
+// Delegation
+document.querySelector(".nav__links").addEventListener("click", function (e) {
+  if (e.target.classList.contains("nav__link")) {
+    e.preventDefault();
+    const id = e.target.getAttribute("href");
+    document.querySelector(id).scrollIntoView({ behavior: "smooth" });
+  }
 });
