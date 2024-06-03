@@ -12,6 +12,7 @@ const section1 = document.querySelector("#section--1");
 const tabs = document.querySelectorAll(".operations__tab");
 const tabsContainer = document.querySelector(".operations__tab-container");
 const tabsContent = document.querySelectorAll(".operations__content");
+const allSections = document.querySelectorAll(".section");
 
 // Modal window
 const openModal = function (e) {
@@ -154,4 +155,25 @@ const headerObserver = new IntersectionObserver(stickyNav, {
   threshold: 0,
   rootMargin: `-${navHeight}px`,
 });
+
 headerObserver.observe(header);
+
+// Reveal sections
+function revealSections(entries, observer) {
+  const [entery] = entries;
+  console.log(entery.target);
+  if (!entery.isIntersecting) return;
+
+  entery.target.classList.remove("section--hidden");
+  observer.unobserve(entery.target);
+}
+
+const sectionObserver = new IntersectionObserver(revealSections, {
+  root: null,
+  threshold: 0.15,
+});
+
+allSections.forEach((section) => {
+  sectionObserver.observe(section);
+  section.classList.add("section--hidden");
+});
