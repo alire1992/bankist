@@ -14,6 +14,10 @@ const tabsContainer = document.querySelector(".operations__tab-container");
 const tabsContent = document.querySelectorAll(".operations__content");
 const allSections = document.querySelectorAll(".section");
 const imgTargets = document.querySelectorAll("img[data-src]");
+const slides = document.querySelectorAll(".slide");
+const sliderBtnLeft = document.querySelector(".slider__btn--left");
+const sliderBtnRight = document.querySelector(".slider__btn--right");
+const dotsContainer = document.querySelector(".dots");
 
 // Modal window
 const openModal = function (e) {
@@ -200,3 +204,79 @@ const imgObserver = new IntersectionObserver(loaImage, {
 });
 
 imgTargets.forEach((img) => imgObserver.observe(img));
+
+// Slider
+function slider() {
+  let curSlide = 0;
+
+  function createDots() {
+    slides.forEach((_, i) => {
+      dotsContainer.insertAdjacentHTML(
+        "beforeend",
+        `<button class="dots__dot" data-slide="${i}"></button>`
+      );
+    });
+  }
+
+  function activateDot(slide) {
+    document
+      .querySelectorAll(".dots__dot")
+      .forEach((dot) => dot.classList.remove("dots__dot--active"));
+
+    document
+      .querySelector(`.dots__dot[data-slide="${slide}"]`)
+      .classList.add("dots__dot--active");
+  }
+
+  function goToSlide(slide) {
+    slides.forEach((s, i) => {
+      s.style.transform = `translateX(${(i - slide) * 100}%)`;
+    });
+  }
+
+  // Previous Slide
+  function prevSlide() {
+    if (curSlide === 0) {
+      curSlide = slides.length - 1;
+    } else curSlide--;
+
+    goToSlide(curSlide);
+    activateDot(curSlide);
+  }
+
+  // Next slide
+  function nextSlide() {
+    if (curSlide === slides.length - 1) {
+      curSlide = 0;
+    } else curSlide++;
+
+    goToSlide(curSlide);
+    activateDot(curSlide);
+  }
+
+  function init() {
+    createDots();
+    goToSlide(0);
+    activateDot(0);
+  }
+
+  init();
+
+  sliderBtnLeft.addEventListener("click", prevSlide);
+  sliderBtnRight.addEventListener("click", nextSlide);
+
+  document.addEventListener("keydown", function (e) {
+    e.key === "ArrowLeft" && prevSlide();
+    e.key === "ArrowRight" && nextSlide();
+  });
+
+  dotsContainer.addEventListener("click", function (e) {
+    if (e.target.classList.contains("dots__dot")) {
+      const { slide } = e.target.dataset;
+      goToSlide(slide);
+      activateDot(slide);
+    }
+  });
+}
+
+slider();
